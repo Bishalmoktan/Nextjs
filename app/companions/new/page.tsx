@@ -1,7 +1,16 @@
 import React from "react";
 
-const CompanionForm = () => {
-  return <div>CompanionForm</div>;
+import CompanionForm from "@/components/CompanionForm";
+
+const NewCompanion = () => {
+  return (
+    <main className="min-lg:w-1/3 min-md:w-2/3 items-center justify-center">
+      <article className="flex flex-col w-full gap-4">
+        <h1>Companion Builder</h1>
+        <CompanionForm />
+      </article>
+    </main>
+  );
 };
 
-export default CompanionForm;
+export default NewCompanion;
