@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { redirect } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ import {
 import { subjects } from "@/constants";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { createCompanion } from "@/lib/actions/companion.actions";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Companion is required." }),
@@ -46,8 +48,15 @@ const CompanionForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const companion = await createCompanion(values);
+
+    if (companion) {
+      redirect(`/companions/${companion.id}`);
+    } else {
+      console.log("Failed to create companion");
+      redirect("/");
+    }
   }
   return (
     <Form {...form}>
