@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { vapi } from "@/lib/vapi.sdk";
 import { cn, configureAssistant, getSubjectColor } from "@/lib/utils";
 import soundwaves from "@/constants/soundwaves.json";
+import { addToSessionHistory } from "@/lib/actions/companion.actions";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -17,6 +18,7 @@ enum CallStatus {
 }
 
 const CompanionComponent = ({
+  companionId,
   subject,
   topic,
   name,
@@ -45,7 +47,10 @@ const CompanionComponent = ({
   useEffect(() => {
     const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
 
-    const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
+    const onCallEnd = () => {
+      setCallStatus(CallStatus.FINISHED);
+      addToSessionHistory(companionId);
+    };
 
     const onMessage = (message: Message) => {
       if (message.type === "transcript" && message.transcriptType === "final") {
@@ -83,7 +88,7 @@ const CompanionComponent = ({
   };
 
   const handleCall = async () => {
-    setCallStatus(CallStatus.ACTIVE);
+    setCallStatus(CallStatus.CONNECTING);
 
     const assistantOverrides = {
       variableValues: { subject, topic, style },
